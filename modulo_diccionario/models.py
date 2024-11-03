@@ -54,3 +54,56 @@ def agregar_tabla(nombre, descripcion, columnas):
 def obtener_tablas():
     """Devuelve la lista de tablas con columnas."""
     return cargar_datos_json()["ejemplos_tablas"]
+
+def obtener_columnas_de_tabla(nombre_tabla):
+    """Devuelve las columnas de una tabla específica."""
+    tablas = obtener_tablas()
+    for tabla in tablas:
+        if tabla['nombre'] == nombre_tabla:
+            return tabla.get('columnas', [])
+    return []
+
+
+def agregar_relacion(tabla_origen, columna_origen, tabla_destino, columna_destino, tipo_relacion):
+    data = cargar_datos_json()
+    nueva_relacion = {
+        "tabla_origen": tabla_origen,
+        "columna_origen": columna_origen,
+        "tabla_destino": tabla_destino,
+        "columna_destino": columna_destino,
+        "tipo_relacion": tipo_relacion
+    }
+
+    # Asegúrate de que 'relaciones' esté inicializado
+    if "relaciones" not in data:
+        data["relaciones"] = []
+
+    data["relaciones"].append(nueva_relacion)
+
+    # Intenta guardar los datos, maneja la excepción
+    try:
+        guardar_datos_json(data)
+    except Exception as e:
+        print(f"Error al guardar la relación: {e}")
+        raise  # Vuelve a lanzar la excepción para que sea manejada en el endpoint
+
+# Función para obtener todas las relaciones
+def obtener_relaciones():
+    data = cargar_datos_json()
+    return data.get("relaciones", [])
+
+# Función para eliminar una relación
+def eliminar_relacion(tabla_origen, tabla_destino):
+    try:
+        data = cargar_datos_json()
+        relaciones = data.get("relaciones", [])
+        
+        # Filtrar las relaciones que no coincidan con los parámetros dados
+        relaciones_filtradas = [r for r in relaciones if not (r["tabla_origen"] == tabla_origen and r["tabla_destino"] == tabla_destino)]
+        
+        data["relaciones"] = relaciones_filtradas  # Actualiza las relaciones en el JSON
+        guardar_datos_json(data)  # Guarda los cambios
+        return True
+    except Exception as e:
+        print(f"Error al eliminar relación: {e}")
+        raise  # Vuelve a lanzar la excepción para que sea manejada en el endpoint

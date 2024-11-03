@@ -27,16 +27,33 @@
                     ]
                 }
             ],
-            "registros": [
+            "registros": []
+        },
+        {
+            "id": 2,
+            "nombre": "prueba2",
+            "descripcion": "prueba2",
+            "columnas": [
                 {
-                    "id_prueba": "1111"
+                    "nombre": "id_prueba2",
+                    "tipo": "INT",
+                    "restricciones": [
+                        "PRIMARY KEY"
+                    ]
+                },
+                {
+                    "nombre": "prueba1",
+                    "tipo": "INT",
+                    "restricciones": [
+                        "FOREIGN KEY"
+                    ]
                 }
-            ]
+            ],
+            "registros": []
         }
     ],
     "relaciones": [],
     "estadisticas": {
-        "total_tablas": 0
-
+        "total_tablas": 2
     }
 }

@@ -1,6 +1,6 @@
 #modulo_diccionario/servicios.py
 import json
-from .models import cargar_datos_json, guardar_datos_json, agregar_tabla, obtener_tablas, eliminar_tabla
+from .models import cargar_datos_json, guardar_datos_json, agregar_tabla, obtener_tablas
 
 # Servicio para agregar una tabla con columnas
 def servicio_agregar_tabla(nombre, descripcion, columnas):
@@ -17,9 +17,7 @@ def verificar_nombre_tabla_existente(nombre):
 def servicio_obtener_tablas():
     return obtener_tablas()
 
-# Servicio para eliminar una tabla
-def servicio_eliminar_tabla(nombre):
-    eliminar_tabla(nombre)
+
 
 
 

@@ -36,8 +36,7 @@
     ],
     "relaciones": [],
     "estadisticas": {
-        "total_tablas": 3,
-        "total_dml_operations": 2,
-        "total_ddl_commands": 4
+        "total_tablas": 0
+
     }
 }

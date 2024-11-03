@@ -1,3 +1,4 @@
+# modulo_diccionario/models.py
 import json
 import os
 
@@ -12,13 +13,16 @@ def cargar_datos_json():
             "relaciones": [],
             "estadisticas": {
                 "total_tablas": 0,
-                "total_dml_operations": 0,
-                "total_ddl_commands": 0
+
             }
         }
     
     with open(JSON_FILE_PATH, 'r') as file:
         return json.load(file)
+
+        # Actualizar el conteo de tablas en "estadisticas"
+    data["estadisticas"]["total_tablas"] = len(data.get("ejemplos_tablas", []))
+    return data
 
 def guardar_datos_json(data):
     """Guarda datos en el archivo JSON."""
@@ -41,27 +45,12 @@ def agregar_tabla(nombre, descripcion, columnas):
         'registros': []  # Inicializar la clave 'registros' como una lista vacía
     }
     data["ejemplos_tablas"].append(nueva_tabla)
-    guardar_datos_json(data)
 
-    # Actualizar estadísticas
+    # Actualizar estadísticas al agregar una nueva tabla
+    data["estadisticas"]["total_tablas"] += 1
+
     guardar_datos_json(data)
 
 def obtener_tablas():
     """Devuelve la lista de tablas con columnas."""
     return cargar_datos_json()["ejemplos_tablas"]
-
-def eliminar_tabla(nombre):
-    """Elimina una tabla del archivo JSON."""
-    data = cargar_datos_json()
-    tablas = data["ejemplos_tablas"]
-    
-    # Filtrar la tabla que se desea eliminar
-    nuevas_tablas = [tabla for tabla in tablas if tabla["nombre"] != nombre]
-    
-    if len(tablas) == len(nuevas_tablas):
-        return False  # No se encontró la tabla para eliminar
-
-    data["ejemplos_tablas"] = nuevas_tablas
-    guardar_datos_json(data)
-    return True
-

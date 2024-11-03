@@ -5,10 +5,9 @@ from flask import Blueprint, jsonify, request
 from .services import (
     servicio_agregar_tabla,
     servicio_obtener_tablas,
-    servicio_eliminar_tabla,
     verificar_nombre_tabla_existente
 )
-
+from .models import cargar_datos_json
 
 modulo_diccionario = Blueprint('modulo_diccionario', __name__)
 
@@ -31,10 +30,10 @@ def post_tabla():
     servicio_agregar_tabla(nombre, descripcion, columnas)
     return jsonify({"message": "Tabla agregada con éxito."}), 201
 
-@modulo_diccionario.route('/tablas/<string:nombre>', methods=['DELETE'])
-def delete_tabla(nombre):
-    success = servicio_eliminar_tabla(nombre)
-    if success:
-        return jsonify({"message": "Tabla eliminada con éxito."}), 200
-    else:
-        return jsonify({"error": "Tabla no encontrada."}), 404
+
+@modulo_diccionario.route('/estadisticas', methods=['GET'])
+def get_estadisticas():
+    data = cargar_datos_json()
+    # Contar las tablas en "ejemplos_tablas" y actualizar "total_tablas"
+    data["estadisticas"]["total_tablas"] = len(data.get("ejemplos_tablas", []))
+    return jsonify({"estadisticas": data["estadisticas"]})

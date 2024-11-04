@@ -1,7 +1,6 @@
-# modulo_diccionario/views.py
 import os
 import json
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request   #Reponder Y solicitudes
 from .services import (
     servicio_agregar_tabla,
     servicio_obtener_tablas,
@@ -13,17 +12,17 @@ from .services import (
 )
 from .models import cargar_datos_json
 
-modulo_diccionario = Blueprint('modulo_diccionario', __name__)
+modulo_diccionario = Blueprint('modulo_diccionario', __name__) #Organizar rutas
 
 
 @modulo_diccionario.route('/tablas', methods=['GET'])
 def get_tablas():
+    #obtene tablas
     tablas = servicio_obtener_tablas()
-    return jsonify(tablas)
+    return jsonify(tablas) #AlonDur
 
 @modulo_diccionario.route('/tablas/<string:nombre_tabla>/columnas', methods=['GET'])
-def get_columnas(nombre_tabla):
-    """Obtiene las columnas de una tabla específica."""
+def get_columnas(nombre_tabla):    #Columnas de una tabla en co,un 
     columnas = servicio_obtener_columnas(nombre_tabla)
     return jsonify(columnas)
 
@@ -35,51 +34,47 @@ def post_tabla():
     columnas = data.get("columnas", [])
 
     if verificar_nombre_tabla_existente(nombre):
-        return jsonify({"error": "Ya existe una tabla con ese nombre."}), 400
+        return jsonify({"error": "Ya existe una tabla con ese nombre."}), 400 #msg
 
     servicio_agregar_tabla(nombre, descripcion, columnas)
-    return jsonify({"message": "Tabla agregada con éxito."}), 201
+    return jsonify({"message": "Tabla agregada con éxito."}), 201     #msg
 
 
 @modulo_diccionario.route('/estadisticas', methods=['GET'])
 def get_estadisticas():
-    data = cargar_datos_json()
-    # Contar las tablas en "ejemplos_tablas" y actualizar "total_tablas"
+    data = cargar_datos_json()    #actualizar estadisticas de tablas dashboard
     data["estadisticas"]["total_tablas"] = len(data.get("ejemplos_tablas", []))
     return jsonify({"estadisticas": data["estadisticas"]})
 
 @modulo_diccionario.route('/relaciones', methods=['GET'])
 def obtener_relaciones_endpoint():
-    """Obtiene todas las relaciones."""
     relaciones = listar_relaciones()
     return jsonify(relaciones), 200
 
 @modulo_diccionario.route('/relaciones', methods=['POST'])
 def agregar_nueva_relacion():
-    """Crea una nueva relación entre tablas."""
     data = request.json
     tabla_origen = data.get('tabla_origen')
     columna_origen = data.get('columna_origen')
     tabla_destino = data.get('tabla_destino')
     columna_destino = data.get('columna_destino')
     tipo_relacion = data.get('tipo_relacion')
-
-    # Validación básica
-    if not all([tabla_origen, columna_origen, tabla_destino, columna_destino, tipo_relacion]):
+#AlonDur
+   
+    if not all([tabla_origen, columna_origen, tabla_destino, columna_destino, tipo_relacion]):    #Calida que los campos esten ocupados
         return jsonify({"message": "Todos los campos son requeridos."}), 400
 
     try:
         crear_relacion(tabla_origen, columna_origen, tabla_destino, columna_destino, tipo_relacion)
         return jsonify({"message": "Relación creada exitosamente."}), 201
     except Exception as e:
-        print(f"Error al crear relación: {e}")  # Añadir un registro de error
+        print(f"Error al crear relación: {e}") 
         return jsonify({"message": "Error al crear relación."}), 500
 
 @modulo_diccionario.route('/relaciones', methods=['DELETE'])
 def eliminar_relacion():
     data = request.get_json()
 
-    # Asegúrate de que estás recibiendo los datos correctos
     tabla_origen = data.get('tabla_origen')
     tabla_destino = data.get('tabla_destino')
 
@@ -87,9 +82,9 @@ def eliminar_relacion():
         return jsonify({"message": "Datos inválidos"}), 400
 
     try:
-        # Llama a la función para eliminar la relación
-        borrar_relacion(tabla_origen, tabla_destino)  # Asegúrate de que esta función esté definida y funcione correctamente
-        return '', 204  # Devuelve un estado 204 si se elimina correctamente
+       
+        borrar_relacion(tabla_origen, tabla_destino)  
+        return '', 204 
     except Exception as e:
         print(f"Error al eliminar relación: {e}")  # Registra el error en la consola
         return jsonify({"message": "Error al eliminar relación."}), 500

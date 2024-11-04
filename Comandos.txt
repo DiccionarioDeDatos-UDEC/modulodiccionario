@@ -1,4 +1,16 @@
-Borar carpeta"venv" - y los _pycache_
+Borar carpeta"venv" -y los _pycahe_
 python -m venv venv   Crear entorno py 
 .\venv\Scripts\activate   ejecutar el entorno py 
 pip install -r requirements.txt
+pip install flask-cors
+npm install axios  
+flask run
+
+
+subir
+git add .
+git commit -m "mensaje que quiera"
+git origin push "rama en la que esta"
+
+actualizar 
+git pull origin "rama en la que esta y quiere jalar lo que hay en github"
